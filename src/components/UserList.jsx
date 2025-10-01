@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 const UserList = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/users")
@@ -17,9 +18,22 @@ const UserList = () => {
 
   if (loading) return <p>Loading users...</p>;
 
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <div>
       <h2>User List</h2>
+      <input
+        type="text"
+        placeholder="Search by name or email"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        style={{ marginBottom: "10px", padding: "5px" }}
+      />
       <table border="1" cellPadding="10">
         <thead>
           <tr>
@@ -29,7 +43,7 @@ const UserList = () => {
           </tr>
         </thead>
         <tbody>
-          {users.map((user) => (
+          {filteredUsers.map((user) => (
             <tr key={user.id}>
               <td>{user.name}</td>
               <td>{user.email}</td>
