@@ -2,14 +2,14 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import AddUserForm from "./AddUserForm";
-import { addUser, updateUser, deleteUser } from "../store/usersSlice";
+import { addUser, deleteUser } from "../store/usersSlice";
 
 const UserList = () => {
   const dispatch = useDispatch();
   const { apiUsers, localUsers } = useSelector((state) => state.users);
 
   const [search, setSearch] = useState("");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState("none");
 
   const allUsers = [...localUsers, ...apiUsers];
 
@@ -20,8 +20,13 @@ const UserList = () => {
   );
 
   const sortedUsers = [...filteredUsers].sort((a, b) => {
-    if (a.name < b.name) return sortOrder === "asc" ? -1 : 1;
-    if (a.name > b.name) return sortOrder === "asc" ? 1 : -1;
+    if (sortOrder === "none") return 0;
+
+    const nameA = a.name.toLowerCase();
+    const nameB = b.name.toLowerCase();
+
+    if (nameA < nameB) return sortOrder === "asc" ? -1 : 1;
+    if (nameA > nameB) return sortOrder === "asc" ? 1 : -1;
     return 0;
   });
 
@@ -31,6 +36,12 @@ const UserList = () => {
 
   const handleDeleteUser = (id) => {
     dispatch(deleteUser(id));
+  };
+
+  const handleSortToggle = () => {
+    if (sortOrder === "none") setSortOrder("asc");
+    else if (sortOrder === "asc") setSortOrder("desc");
+    else setSortOrder("none");
   };
 
   return (
@@ -46,11 +57,16 @@ const UserList = () => {
         style={{ marginBottom: "10px", padding: "5px" }}
       />
 
-      <button
-        onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-      >
-        Sort by Name ({sortOrder === "asc" ? "A → Z" : "Z → A"})
+      <button onClick={handleSortToggle}>
+        Sort by Name (
+        {sortOrder === "none"
+          ? "None"
+          : sortOrder === "asc"
+          ? "A → Z"
+          : "Z → A"}
+        )
       </button>
+
       <table border="1" cellPadding="10">
         <thead>
           <tr>

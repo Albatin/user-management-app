@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addUser } from "../store/usersSlice";
 
-const AddUserForm = ({ onAddUser }) => {
+const AddUserForm = () => {
+  const dispatch = useDispatch();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
@@ -18,7 +22,7 @@ const AddUserForm = ({ onAddUser }) => {
       email,
       company: { name: company || "N/A" },
     };
-    onAddUser(newUser);
+    dispatch(addUser(newUser));
 
     setName("");
     setEmail("");

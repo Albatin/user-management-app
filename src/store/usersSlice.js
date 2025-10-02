@@ -5,7 +5,7 @@ const initialState = {
   localUsers: [],
 };
 
-const usersSlice = createSlice({
+export const usersSlice = createSlice({
   name: "users",
   initialState,
   reducers: {
@@ -14,21 +14,24 @@ const usersSlice = createSlice({
     },
 
     addUser: (state, action) => {
-      state.loaclUsers.unshift(action.payload);
+      state.localUsers = [action.payload, ...state.localUsers];
     },
+
     updateUser: (state, action) => {
       const { id, data } = action.payload;
+
       state.apiUsers = state.apiUsers.map((u) =>
         u.id === id ? { ...u, ...data } : u
       );
-      state.loaclUsers = state.loaclUsers.map((u) =>
+      state.localUsers = state.localUsers.map((u) =>
         u.id === id ? { ...u, ...data } : u
       );
     },
+
     deleteUser: (state, action) => {
       const id = action.payload;
       state.apiUsers = state.apiUsers.filter((u) => u.id !== id);
-      state.loaclUsers = state.loaclUsers.filter((u) => u.id !== id);
+      state.localUsers = state.localUsers.filter((u) => u.id !== id);
     },
   },
 });
