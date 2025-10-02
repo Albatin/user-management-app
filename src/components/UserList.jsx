@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import AddUserForm from "./AddUserForm";
 
 const UserList = ({ users, localUsers, setLocalUsers, loading }) => {
   const [search, setSearch] = useState("");
+  const [sortOrder, setSortOrder] = useState("asc");
 
   if (loading) return <p>Loading users...</p>;
   const allUsers = [...localUsers, ...users];
@@ -13,6 +14,12 @@ const UserList = ({ users, localUsers, setLocalUsers, loading }) => {
       user.name.toLowerCase().includes(search.toLowerCase()) ||
       user.email.toLowerCase().includes(search.toLowerCase())
   );
+
+  const sortedUsers = [...filteredUsers].sort((a, b) => {
+    if (a.name < b.name) return sortOrder === "asc" ? -1 : 1;
+    if (a.name > b.name) return sortOrder === "asc" ? 1 : -1;
+    return 0;
+  });
 
   return (
     <div>
@@ -28,6 +35,12 @@ const UserList = ({ users, localUsers, setLocalUsers, loading }) => {
         onChange={(e) => setSearch(e.target.value)}
         style={{ marginBottom: "10px", padding: "5px" }}
       />
+
+      <button
+        onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+      >
+        Sort by Name ({sortOrder === "asc" ? "A → Z" : "Z → A"})
+      </button>
       <table border="1" cellPadding="10">
         <thead>
           <tr>
@@ -37,7 +50,7 @@ const UserList = ({ users, localUsers, setLocalUsers, loading }) => {
           </tr>
         </thead>
         <tbody>
-          {filteredUsers.map((user) => (
+          {sortedUsers.map((user) => (
             <tr key={user.id}>
               <td>
                 <Link

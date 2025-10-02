@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import UserList from "./components/UserList";
-import { Routes, Route, data } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import UserDetails from "./components/UserDetails";
 
 function App() {
