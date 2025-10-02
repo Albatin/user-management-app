@@ -9,7 +9,7 @@ function App() {
       <h1>User Management App</h1>
       <Routes>
         <Route path="/" element={<UserList />} />
-        <Route path="/user/:id" element={<UserDetails />} />
+        <Route path="/users/:id" element={<UserDetails />} />
       </Routes>
     </div>
   );
