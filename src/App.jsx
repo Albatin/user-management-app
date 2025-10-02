@@ -17,11 +17,10 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-gray-800 text-center mb-8">
+      <div className="container mx-auto px-4 sm:px-6 xl:px-8 py-4 sm:py-6 lg:py-8">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 text-center mb-4 sm:mb-6 lg:mb-8">
           User Management
         </h1>
-
         <Routes>
           <Route path="/" element={<UserList />} />
           <Route path="/users/:id" element={<UserDetails />} />
