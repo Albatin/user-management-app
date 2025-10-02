@@ -1,13 +1,17 @@
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import AddUserForm from "./AddUserForm";
+import { addUser, updateUser, deleteUser } from "../store/usersSlice";
 
-const UserList = ({ users, localUsers, setLocalUsers, loading }) => {
+const UserList = () => {
+  const dispatch = useDispatch();
+  const { apiUsers, localUsers } = useSelector((state) => state.users);
+
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
 
-  if (loading) return <p>Loading users...</p>;
-  const allUsers = [...localUsers, ...users];
+  const allUsers = [...localUsers, ...apiUsers];
 
   const filteredUsers = allUsers.filter(
     (user) =>
@@ -21,12 +25,18 @@ const UserList = ({ users, localUsers, setLocalUsers, loading }) => {
     return 0;
   });
 
+  const handleAddUser = (newUser) => {
+    dispatch(addUser(newUser));
+  };
+
+  const handleDeleteUser = (id) => {
+    dispatch(deleteUser(id));
+  };
+
   return (
     <div>
       <h2>User List</h2>
-      <AddUserForm
-        onAddUser={(newUser) => setLocalUsers((prev) => [newUser, ...prev])}
-      />
+      <AddUserForm onAddUser={handleAddUser} />
 
       <input
         type="text"
@@ -63,6 +73,11 @@ const UserList = ({ users, localUsers, setLocalUsers, loading }) => {
               </td>
               <td>{user.email}</td>
               <td>{user.company?.name || "N/A"}</td>
+              <td>
+                <button onClick={() => handleDeleteUser(user.id)}>
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
