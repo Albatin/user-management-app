@@ -16,7 +16,7 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="App">
+    <div className="container mx-auto p-4">
       <h1>User Management App</h1>
       <Routes>
         <Route path="/" element={<UserList />} />
