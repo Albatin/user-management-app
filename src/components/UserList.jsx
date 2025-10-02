@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import AddUserForm from "./AddUserForm";
-import { addUser, deleteUser } from "../store/usersSlice";
+import { addUser, deleteUser, updateUser } from "../store/usersSlice";
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -10,6 +10,10 @@ const UserList = () => {
 
   const [search, setSearch] = useState("");
   const [sortOrder, setSortOrder] = useState("none");
+  const [editingUserId, setEditingUserId] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editEmail, setEditEmail] = useState("");
+  const [editCompany, setEditCompany] = useState("");
 
   const allUsers = [...localUsers, ...apiUsers];
 
@@ -43,6 +47,28 @@ const UserList = () => {
     else if (sortOrder === "asc") setSortOrder("desc");
     else setSortOrder("none");
   };
+  const startEditing = (user) => {
+    setEditingUserId(user.id);
+    setEditName(user.name || "");
+    setEditEmail(user.email || "");
+    setEditCompany(user.company?.name || "");
+  };
+
+  const saveEdit = (id) => {
+    dispatch(
+      updateUser({
+        id,
+        data: {
+          name: editName,
+          email: editEmail,
+          company: { name: editCompany },
+        },
+      })
+    );
+    setEditingUserId(null);
+  };
+
+  const cancelEdit = () => setEditingUserId(null);
 
   return (
     <div>
@@ -73,26 +99,62 @@ const UserList = () => {
             <th>Name</th>
             <th>Email</th>
             <th>Company</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {sortedUsers.map((user) => (
             <tr key={user.id}>
               <td>
-                <Link
-                  to={`/users/${user.id}`}
-                  state={{ user }}
-                  style={{ color: "blue", textDecoration: "underline" }}
-                >
-                  {user.name}
-                </Link>
+                {editingUserId === user.id ? (
+                  <input
+                    value={editName}
+                    onChange={(e) => setEditName(e.target.value)}
+                  />
+                ) : (
+                  <Link
+                    to={`/users/${user.id}`}
+                    state={{ user }}
+                    style={{ color: "blue", textDecoration: "underline" }}
+                  >
+                    {user.name}
+                  </Link>
+                )}
               </td>
-              <td>{user.email}</td>
-              <td>{user.company?.name || "N/A"}</td>
               <td>
-                <button onClick={() => handleDeleteUser(user.id)}>
-                  Delete
-                </button>
+                {editingUserId === user.id ? (
+                  <input
+                    value={editEmail}
+                    onChange={(e) => setEditEmail(e.target.value)}
+                  />
+                ) : (
+                  user.email
+                )}
+              </td>
+              <td>
+                {editingUserId === user.id ? (
+                  <input
+                    value={editCompany}
+                    onChange={(e) => setEditCompany(e.target.value)}
+                  />
+                ) : (
+                  user.company?.name || "N/A"
+                )}
+              </td>
+              <td>
+                {editingUserId === user.id ? (
+                  <>
+                    <button onClick={() => saveEdit(user.id)}>Save</button>
+                    <button onClick={cancelEdit}>Cancel</button>
+                  </>
+                ) : (
+                  <>
+                    <button onClick={() => startEditing(user)}>Edit</button>
+                    <button onClick={() => handleDeleteUser(user.id)}>
+                      Delete
+                    </button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
