@@ -16,12 +16,17 @@ function App() {
   }, [dispatch]);
 
   return (
-    <div className="container mx-auto p-4">
-      <h1>User Management App</h1>
-      <Routes>
-        <Route path="/" element={<UserList />} />
-        <Route path="/users/:id" element={<UserDetails />} />
-      </Routes>
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-3xl font-bold text-gray-800 text-center mb-8">
+          User Management
+        </h1>
+
+        <Routes>
+          <Route path="/" element={<UserList />} />
+          <Route path="/users/:id" element={<UserDetails />} />
+        </Routes>
+      </div>
     </div>
   );
 }
