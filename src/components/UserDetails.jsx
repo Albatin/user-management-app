@@ -1,18 +1,23 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { useParams, Link, data } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 const UserDetails = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(null);
 
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/users/${id}")
+    fetch(`https://jsonplaceholder.typicode.com/users/${id}`)
       .then((res) => res.json())
-      .then((data) => setUser(data))
+      .then((data) => {
+        setUser(data);
+        setLoading(false);
+      })
       .catch((err) => console.error(err));
   }, [id]);
 
+  if (loading) return <p>Loading user details...</p>;
   if (!user) return <p>Loading user details...</p>;
   return (
     <div>
