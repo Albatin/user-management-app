@@ -1,26 +1,14 @@
-import React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import AddUserForm from "./AddUserForm";
 
-const UserList = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+const UserList = ({ users, localUsers, setLocalUsers, loading }) => {
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then((res) => res.json())
-      .then((data) => {
-        setUsers(data);
-        setLoading(false);
-      })
-      .catch((err) => console.error(err));
-  }, []);
-
   if (loading) return <p>Loading users...</p>;
+  const allUsers = [...localUsers, ...users];
 
-  const filteredUsers = users.filter(
+  const filteredUsers = allUsers.filter(
     (user) =>
       user.name.toLowerCase().includes(search.toLowerCase()) ||
       user.email.toLowerCase().includes(search.toLowerCase())
@@ -29,7 +17,9 @@ const UserList = () => {
   return (
     <div>
       <h2>User List</h2>
-      <AddUserForm onAddUser={(newUser) => setUsers([newUser, ...users])} />
+      <AddUserForm
+        onAddUser={(newUser) => setLocalUsers((prev) => [newUser, ...prev])}
+      />
 
       <input
         type="text"
@@ -52,13 +42,14 @@ const UserList = () => {
               <td>
                 <Link
                   to={`/users/${user.id}`}
+                  state={{ user }}
                   style={{ color: "blue", textDecoration: "underline" }}
                 >
                   {user.name}
                 </Link>
               </td>
               <td>{user.email}</td>
-              <td>{user.company.name}</td>
+              <td>{user.company?.name || "N/A"}</td>
             </tr>
           ))}
         </tbody>
