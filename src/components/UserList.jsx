@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import AddUserForm from "./AddUserForm";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -28,6 +29,8 @@ const UserList = () => {
   return (
     <div>
       <h2>User List</h2>
+      <AddUserForm onAddUser={(newUser) => setUsers([newUser, ...users])} />
+
       <input
         type="text"
         placeholder="Search by name or email"
