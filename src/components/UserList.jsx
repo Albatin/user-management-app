@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -45,7 +46,14 @@ const UserList = () => {
         <tbody>
           {filteredUsers.map((user) => (
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td>
+                <Link
+                  to={`/users/${user.id}`}
+                  style={{ color: "blue", textDecoration: "underline" }}
+                >
+                  {user.name}
+                </Link>
+              </td>
               <td>{user.email}</td>
               <td>{user.company.name}</td>
             </tr>
