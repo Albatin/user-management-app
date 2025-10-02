@@ -1,10 +1,10 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import { useParams, Link, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 const UserDetails = () => {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const localUser = location.state?.user;
 
   const [user, setUser] = React.useState(localUser || null);
@@ -22,8 +22,7 @@ const UserDetails = () => {
     }
   }, [id, localUser]);
 
-  if (loading) return <p>Loading user details...</p>;
-  if (!user) return <p>Loading user details...</p>;
+  if (loading || !user) return <p>Loading user details...</p>;
   return (
     <div>
       <h2>{user.name}</h2>
@@ -38,12 +37,12 @@ const UserDetails = () => {
       </p>
       <p>
         <strong>Address:</strong> {user.address?.street || "N/A"},{" "}
-        {user.address?.city || ""}
+        {user.address?.city || "N/A"}
       </p>
       <p>
-        <strong>Company:</strong> {user.company.name || "N/A"}
+        <strong>Company:</strong> {user.company?.name || "N/A"}
       </p>
-      <Link to="/">Back to User</Link>
+      <button onClick={() => navigate(-1)}>Back to User List</button>
     </div>
   );
 };
